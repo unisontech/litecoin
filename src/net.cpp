@@ -21,6 +21,7 @@
 #include <miniupnpc/upnperrors.h>
 #endif
 
+
 // Dump addresses to peers.dat every 15 minutes (900s)
 #define DUMP_ADDRESSES_INTERVAL 900
 
@@ -1173,18 +1174,18 @@ void MapPort(bool)
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
 static const char *strMainNetDNSSeed[][2] = {
-    {"litecointools.com", "dnsseed.litecointools.com"},
-    {"litecoinpool.org", "dnsseed.litecoinpool.org"},
-    {"xurious.com", "dnsseed.ltc.xurious.com"},
-    {"koin-project.com", "dnsseed.koin-project.com"},
-    {"weminemnc.com", "dnsseed.weminemnc.com"},
+    //{"litecointools.com", "dnsseed.litecointools.com"},
+    //{"litecoinpool.org", "dnsseed.litecoinpool.org"},
+    //{"xurious.com", "dnsseed.ltc.xurious.com"},
+    //{"koin-project.com", "dnsseed.koin-project.com"},
+    //{"weminemnc.com", "dnsseed.weminemnc.com"},
     {NULL, NULL}
 };
 
 static const char *strTestNetDNSSeed[][2] = {
-    {"litecointools.com", "testnet-seed.litecointools.com"},
-    {"xurious.com", "testnet-seed.ltc.xurious.com"},
-    {"wemine-testnet.com", "dnsseed.wemine-testnet.com"},
+    //{"litecointools.com", "testnet-seed.litecointools.com"},
+    //{"xurious.com", "testnet-seed.ltc.xurious.com"},
+    //{"wemine-testnet.com", "dnsseed.wemine-testnet.com"},
     {NULL, NULL}
 };
 
@@ -1213,6 +1214,8 @@ void ThreadDNSAddressSeed()
                     found++;
                 }
             }
+	    //cout <<"Addr3: "<<vAdd<<endl;
+	    cout <<"Addr3: "<<endl;
             addrman.Add(vAdd, CNetAddr(strDNSSeed[seed_idx][0], true));
         }
     }
@@ -1229,8 +1232,8 @@ void ThreadDNSAddressSeed()
 
 
 
-
-
+unsigned int pnSeed[] = {};
+/*
 unsigned int pnSeed[] =
 {
     0x38a9b992, 0x73d4f3a2, 0x43eda52e, 0xa1c4a2b2, 0x73c41955, 0x6992f3a2, 0x729cb992, 0x8b53b205,
@@ -1308,8 +1311,9 @@ unsigned int pnSeed[] =
     0xe177d9c7, 0x95bff743, 0xea985542, 0xc210ec55, 0xeef70b67, 0xc9eb175e, 0x844d38ad, 0x65afa247,
     0x72da6d26, 0xed165dbc, 0xe8c83ad0, 0x9a8f37d8, 0x925adf50, 0x6b6ac162, 0x4b969e32, 0x735e1c45,
     0x4423ff60, 0xfa57ec6d, 0xcde2fb65, 0x11093257, 0x4748cd5b, 0x720c03dd, 0x8c7b0905, 0xba8b2e48
-};
 
+};
+*/
 void DumpAddresses()
 {
     int64 nStart = GetTimeMillis();
@@ -1388,6 +1392,8 @@ void ThreadOpenConnections()
                 addr.nTime = GetTime()-GetRand(nOneWeek)-nOneWeek;
                 vAdd.push_back(addr);
             }
+	    //cout <<"Addr4: "<<vAdd<<endl;
+	    //cout <<"Addr4: "<<endl;
             addrman.Add(vAdd, CNetAddr("127.0.0.1"));
         }
 

@@ -170,8 +170,10 @@ Value getworkex(const Array& params, bool fHelp)
             "If [data, coinbase] is not specified, returns extended work data.\n"
         );
 
-    if (vNodes.empty())
+    if (vNodes.empty()){
+	cout<<"MINING error1"<<endl;
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Litecoin is not connected!");
+    }
 
     if (IsInitialBlockDownload())
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Litecoin is downloading blocks...");
@@ -310,8 +312,10 @@ Value getwork(const Array& params, bool fHelp)
             "  \"target\" : little endian hash target\n"
             "If [data] is specified, tries to solve the block and returns true if it was successful.");
 
-    if (vNodes.empty())
+    if (vNodes.empty()){
+	cout<<"MINING error2"<<endl;
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Litecoin is not connected!");
+    }
 
     if (IsInitialBlockDownload())
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Litecoin is downloading blocks...");
@@ -452,11 +456,15 @@ Value getblocktemplate(const Array& params, bool fHelp)
     if (strMode != "template")
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
-    if (vNodes.empty())
+    if (vNodes.empty()){
+	cout<<"MINING error3"<<endl;
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Litecoin is not connected!");
+    }
 
-    if (IsInitialBlockDownload())
+    if (IsInitialBlockDownload()){
+	cout<<"RPCIIBD"<<endl;
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Litecoin is downloading blocks...");
+    }
 
     // Update block
     static unsigned int nTransactionsUpdatedLast;

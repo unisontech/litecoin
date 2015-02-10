@@ -327,6 +327,7 @@ string rfc1123Time()
 
 static string HTTPReply(int nStatus, const string& strMsg, bool keepalive)
 {
+    cout<<strMsg<<endl;
     if (nStatus == HTTP_UNAUTHORIZED)
         return strprintf("HTTP/1.0 401 Authorization Required\r\n"
             "Date: %s\r\n"
@@ -410,8 +411,10 @@ int ReadHTTPStatus(std::basic_istream<char>& stream, int &proto)
     getline(stream, str);
     vector<string> vWords;
     boost::split(vWords, str, boost::is_any_of(" "));
-    if (vWords.size() < 2)
+    if (vWords.size() < 2){
+	cout<<"Er500:1:"<<endl;
         return HTTP_INTERNAL_SERVER_ERROR;
+    }
     proto = 0;
     const char *ver = strstr(str.c_str(), "HTTP/1.");
     if (ver != NULL)
@@ -453,9 +456,10 @@ int ReadHTTPMessage(std::basic_istream<char>& stream, map<string,
 
     // Read header
     int nLen = ReadHTTPHeaders(stream, mapHeadersRet);
-    if (nLen < 0 || nLen > (int)MAX_SIZE)
+    if (nLen < 0 || nLen > (int)MAX_SIZE){
+	cout<<"Er500:2:"<<endl;
         return HTTP_INTERNAL_SERVER_ERROR;
-
+    }
     // Read message
     if (nLen > 0)
     {

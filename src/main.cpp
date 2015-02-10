@@ -35,7 +35,8 @@ CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
-uint256 hashGenesisBlock("0x12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2");
+//uint256 hashGenesisBlock("0x12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2");
+uint256 hashGenesisBlock("0xfa7e12202214a9cd3feb4e1a91aee6f1267afba2e6d7d20a4068362f8cc23990");
 static CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // Litecoin: starting difficulty is 1 / 2^12
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -1087,16 +1088,24 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 
 int64 static GetBlockValue(int nHeight, int64 nFees)
 {
-    int64 nSubsidy = 50 * COIN;
+    cout << "GBV:" << nHeight << endl;
+    //int64 nSubsidy = 50 * COIN;
+    int64 nSubsidy = 16 * 12274758 * COIN;
 
     // Subsidy is cut in half every 840000 blocks, which will occur approximately every 4 years
-    nSubsidy >>= (nHeight / 840000); // Litecoin: 840k blocks in ~4 years
-
-    return nSubsidy + nFees;
+    //nSubsidy >>= (nHeight / 840000); // Litecoin: 840k blocks in ~4 years
+    nSubsidy >>= (nHeight / 262800); // every year
+    if( nHeight > 1314000 ){
+	return 11415525 + nFees;
+    } else {
+    	return nSubsidy + nFees;
+    }
 }
 
-static const int64 nTargetTimespan = 3.5 * 24 * 60 * 60; // Litecoin: 3.5 days
-static const int64 nTargetSpacing = 2.5 * 60; // Litecoin: 2.5 minutes
+//static const int64 nTargetTimespan = 3.5 * 24 * 60 * 60; // Litecoin: 3.5 days
+//static const int64 nTargetSpacing = 2.5 * 60; // Litecoin: 2.5 minutes
+static const int64 nTargetTimespan = 1 * 24 * 60 * 60; // Mcoin: 1 day
+static const int64 nTargetSpacing = 2 * 60; // Mcoin: 2 minutes
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
 
 //
@@ -1195,8 +1204,14 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
 {
+   
+    //printf("CPOW1:%s\n", hash.ToString().c_str());
     CBigNum bnTarget;
     bnTarget.SetCompact(nBits);
+    //printf("CPOW2:%s\n", bnTarget.getuint256().ToString().c_str());
+    //printf("CPOW3:%s\n", to_string(nBits).c_str());
+    //printf("CPOW4:%s\n", bnProofOfWorkLimit.getuint256().ToString().c_str());
+    //cout <<hex<<"0x"<<nBits<<endl;
 
     // Check range
     if (bnTarget <= 0 || bnTarget > bnProofOfWorkLimit)
@@ -1217,8 +1232,10 @@ int GetNumBlocksOfPeers()
 
 bool IsInitialBlockDownload()
 {
+    //cout<<"IIBD1:"<<pindexBest<<"--"<<fImporting<<"--"<<fReindex<<"--"<<nBestHeight<<":"<<Checkpoints::GetTotalBlocksEstimate()<<endl;
     if (pindexBest == NULL || fImporting || fReindex || nBestHeight < Checkpoints::GetTotalBlocksEstimate())
         return true;
+    //cout<<"IIBD2"<<endl;
     static int64 nLastUpdate;
     static CBlockIndex* pindexLastBest;
     if (pindexBest != pindexLastBest)
@@ -1226,8 +1243,11 @@ bool IsInitialBlockDownload()
         pindexLastBest = pindexBest;
         nLastUpdate = GetTime();
     }
-    return (GetTime() - nLastUpdate < 10 &&
+    //cout<<"IIBD3"<<endl;
+    return  (GetTime() - nLastUpdate < 10 &&
             pindexBest->GetBlockTime() < GetTime() - 24 * 60 * 60);
+    //cout<<"IIBD4:"<<iiis<<endl;
+    //return iiis;
 }
 
 void static InvalidChainFound(CBlockIndex* pindexNew)
@@ -2778,22 +2798,41 @@ bool InitBlockIndex() {
         //     CTxOut(nValue=50.00000000, scriptPubKey=040184710fa689ad5023690c80f3a4)
         //   vMerkleTree: 97ddfbbae6
 
+
+
+
+/*
+block.nTime = 1419267751 
+block.nNonce = 672664 
+block.GetHash = fa7e12202214a9cd3feb4e1a91aee6f1267afba2e6d7d20a4068362f8cc23990
+CBlock(hash=fa7e12202214a9cd3feb4e1a91aee6f1267afba2e6d7d20a4068362f8cc23990, input=010000000000000000000000000000000000000000000000000000000000000000000000ad67431f7cacd49c9e294c89d0c7c3307)
+  CTransaction(hash=b2f09403065275974adbc413ea43af7930c3c7d0894c299e9cd4ac7c1f4367ad, ver=1, vin.size=1, vout.size=1, nLockTime=0)
+    CTxIn(COutPoint(0000000000000000000000000000000000000000000000000000000000000000, 4294967295), coinbase 04ffff001d01044c534e4a2074696d652031313a3539414d204465633232203230313420737570657)
+    CTxOut(nValue=196396128.00000000, scriptPubKey=04678afdb0fe5548271967f1a67130)
+  vMerkleTree:
+*/
+
+
         // Genesis block
-        const char* pszTimestamp = "NY Times 05/Oct/2011 Steve Jobs, Apple’s Visionary, Dies at 56";
+        const char* pszTimestamp = "NJ time 11:59AM Dec22 2014 super MKH coin Google to Change Play Store Layout Online";
+	printf("D1: %s\n", pszTimestamp);
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
-        txNew.vout[0].nValue = 50 * COIN;
-        txNew.vout[0].scriptPubKey = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
+        //txNew.vout[0].nValue = 50 * COIN;
+        txNew.vout[0].nValue =  16 * 12274758 * COIN;
+        txNew.vout[0].scriptPubKey = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
         CBlock block;
         block.vtx.push_back(txNew);
         block.hashPrevBlock = 0;
-        block.hashMerkleRoot = block.BuildMerkleTree();
+        //block.hashMerkleRoot = block.BuildMerkleTree();
+        block.hashMerkleRoot = uint256("0xb2f09403065275974adbc413ea43af7930c3c7d0894c299e9cd4ac7c1f4367ad");
         block.nVersion = 1;
-        block.nTime    = 1317972665;
+        block.nTime    = 1419267751;
         block.nBits    = 0x1e0ffff0;
-        block.nNonce   = 2084524493;
+        //block.nNonce   = 385889392;
+        block.nNonce   = 672664;
 
         if (fTestNet)
         {
@@ -2803,10 +2842,59 @@ bool InitBlockIndex() {
 
         //// debug print
         uint256 hash = block.GetHash();
-        printf("%s\n", hash.ToString().c_str());
-        printf("%s\n", hashGenesisBlock.ToString().c_str());
-        printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0x97ddfbbae6be97fd6cdf3e7ca13232a3afff2353e29badfab7f73011edd4ced9"));
+        printf("D2:%s\n", hash.ToString().c_str());
+        printf("D3:%s\n", hashGenesisBlock.ToString().c_str());
+        printf("D4:%s\n", block.hashMerkleRoot.ToString().c_str());
+        assert(block.hashMerkleRoot == uint256("0xb2f09403065275974adbc413ea43af7930c3c7d0894c299e9cd4ac7c1f4367ad"));
+
+/*
+   // If genesis block hash does not match, then generate new genesis hash.
+        if (true && block.GetHash() != hashGenesisBlock)
+        {
+            printf("Searching for genesis block...\n");
+            // This will figure out a valid hash and Nonce if you're
+            // creating a different genesis block:
+            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
+            uint256 thash;
+            char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
+
+            loop
+            {
+#if defined(USE_SSE2)
+                // Detection would work, but in cases where we KNOW it always has SSE2,
+                // it is faster to use directly than to use a function pointer or conditional.
+#if defined(_M_X64) || defined(__x86_64__) || defined(_M_AMD64) || (defined(MAC_OSX) && defined(__i386__))
+                // Always SSE2: x86_64 or Intel MacOS X
+                scrypt_1024_1_1_256_sp_sse2(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+#else
+                // Detect SSE2: 32bit x86 Linux or Windows
+                scrypt_1024_1_1_256_sp(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+#endif
+#else
+                // Generic scrypt
+                scrypt_1024_1_1_256_sp_generic(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+#endif
+                if (thash <= hashTarget)
+                    break;
+                if ((block.nNonce & 0xFFF) == 0)
+                {
+                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                }
+                ++block.nNonce;
+                if (block.nNonce == 0)
+                {
+                    printf("NONCE WRAPPED, incrementing time\n");
+                    ++block.nTime;
+                }
+            }
+            printf("block.nTime = %u \n", block.nTime);
+            printf("block.nNonce = %u \n", block.nNonce);
+            printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
+        }
+*/
+
+
+
         block.print();
         assert(hash == hashGenesisBlock);
 
@@ -3315,6 +3403,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
         } else {
             if (((CNetAddr)pfrom->addr) == (CNetAddr)addrFrom)
             {
+		//cout <<"Addr1:"<<addrFrom<<endl;
+		cout <<"Addr1:"<<endl;
                 addrman.Add(addrFrom, addrFrom);
                 addrman.Good(addrFrom);
             }
@@ -3408,6 +3498,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv)
             if (fReachable)
                 vAddrOk.push_back(addr);
         }
+	//cout << "Addr2 "<<vAddrOk<<endl;
+	cout << "Addr2:"<<endl;
         addrman.Add(vAddrOk, pfrom->addr, 2 * 60 * 60);
         if (vAddr.size() < 1000)
             pfrom->fGetAddr = false;
@@ -3852,10 +3944,10 @@ bool ProcessMessages(CNode* pfrom)
         // get next message
         CNetMessage& msg = *it;
 
-        //if (fDebug)
-        //    printf("ProcessMessages(message %u msgsz, %zu bytes, complete:%s)\n",
-        //            msg.hdr.nMessageSize, msg.vRecv.size(),
-        //            msg.complete() ? "Y" : "N");
+        if (fDebug)
+            printf("ProcessMessages(message %u msgsz, %zu bytes, complete:%s)\n",
+                    msg.hdr.nMessageSize, msg.vRecv.size(),
+                    msg.complete() ? "Y" : "N");
 
         // end, if an incomplete message is found
         if (!msg.complete())
